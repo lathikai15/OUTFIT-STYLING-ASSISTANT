@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Outfit AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        /* Additional CSS for responsiveness */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            margin: 20px 0;
+            color: #333;
+        }
+        #upload-form {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        input[type="file"] {
+            margin: 10px 0;
+        }
+        button {
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #4cae4c;
+        }
+        #results {
+            margin-top: 20px;
+        }
+        .chatbot-icon {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Outfit AI</h1>
+    <form id="upload-form" enctype="multipart/form-data">
+        <input type="file" name="image" accept="image/*" required>
+        <button type="submit">Upload</button>
+    </form>
+    <div id="results"></div>
+
+    <!-- Chatbot Icon -->
+    <img src="https://img.icons8.com/ios-filled/50/000000/chat.png" class="chatbot-icon" alt="Chatbot Icon" onclick="openChatbot()"/>
+
+    <script>
+        document.getElementById('upload-form').onsubmit = async function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            
+            const response = await fetch('/upload', {
+                method: 'POST',
+                body: formData,
+            });
+
+            const resultDiv = document.getElementById('results');
+            if (response.ok) {
+                const data = await response.json();
+                resultDiv.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+                alert(`Outfit Type: ${data.results.clothing_type}\nColor: ${data.results.color_name}`);
+            } else {
+                const error = await response.json();
+                resultDiv.innerHTML = `<pre>Error: ${error.error}</pre>`;
+                alert(`Error: ${error.error}`);
+            }
+        };
+
+        function openChatbot() {
+            alert("Chatbot is under construction! How can I assist you today?");
+        }
+    </script>
+</body>
+</html>

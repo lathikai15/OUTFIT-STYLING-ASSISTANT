@@ -1,0 +1,7 @@
+Flask
+opencv-python
+pandas
+torch
+Pillow
+transformers
+google-generativeai
